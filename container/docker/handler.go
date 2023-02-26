@@ -188,6 +188,8 @@ func newDockerContainerHandler(
 		return nil, fmt.Errorf("failed to inspect container %q: %v", id, err)
 	}
 
+	klog.V(3).InfoS("alexmlqi", "container-name", ctnr.Name, "container-labels", ctnr.Config.Labels)
+
 	// TODO: extract object mother method
 	handler := &dockerContainerHandler{
 		machineInfoFactory: machineInfoFactory,
@@ -354,6 +356,8 @@ func (h *dockerContainerHandler) needNet() bool {
 func (h *dockerContainerHandler) GetSpec() (info.ContainerSpec, error) {
 	hasFilesystem := h.includedMetrics.Has(container.DiskUsageMetrics)
 	spec, err := common.GetSpec(h.cgroupPaths, h.machineInfoFactory, h.needNet(), hasFilesystem)
+
+	klog.V(3).InfoS("alexmlqi: GetSpec", "name", h.reference.Name, "labels", spec.Labels)
 
 	spec.Labels = h.labels
 	spec.Envs = h.envs
