@@ -1879,6 +1879,7 @@ func (c *PrometheusCollector) collectContainersInfo(ch chan<- prometheus.Metric)
 			}
 			desc := cm.desc(labels)
 			for _, metricValue := range cm.getValues(stats) {
+				klog.V(3).InfoS("alexmlqi: metrics label-values", "name", cm.name, "labels", append(labels, cm.extraLabels...), "values", append(values, metricValue.labels...))
 				ch <- prometheus.NewMetricWithTimestamp(
 					metricValue.timestamp,
 					prometheus.MustNewConstMetric(desc, cm.valueType, float64(metricValue.value), append(values, metricValue.labels...)...),
